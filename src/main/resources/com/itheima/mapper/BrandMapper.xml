@@ -32,10 +32,54 @@
         </set>
         where id = #{id}
     </update>
+    <delete id="deleteById">
+        delete from tb_brand where id = #{id}
+    </delete>
+    <delete id="deleteByIds">
+        delete from tb_brand where id in
+                             <foreach collection="ids" item="id" separator="," open="(" close=")">
+                                 #{id}
+                             </foreach>
+    </delete>
     <select id="selectAll" resultMap="brandResultMap">
         select * from tb_brand
     </select>
     <select id="selectById" resultMap="brandResultMap">
         select * from tb_brand where id = #{id}
+    </select>
+    <select id="selectByPage" resultMap="brandResultMap">
+        select * from tb_brand limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCount" resultType="java.lang.Integer">
+        select count(*) from tb_brand
+    </select>
+    <select id="selectByConditionAndPage" resultType="com.itheima.pojo.Brand">
+        select * from tb_brand
+        <where>
+            <if test="brand.brandName != null and brand.brandName != ''">
+                and brand_name like concat(concat("%",#{brand.brandName}),"%")
+            </if>
+            <if test="brand.companyName != null and brand.companyName != ''">
+                and company_name like concat(concat("%",#{brand.companyName}),"%")
+            </if>
+            <if test="brand.status != null">
+                and status = #{brand.status}
+            </if>
+        </where>
+        limit #{begin}, #{size}
+    </select>
+    <select id="selectTotalCountByCondition" resultType="java.lang.Integer">
+        select count(*) from tb_brand
+        <where>
+            <if test="brandName != null and brandName != ''">
+                and brand_name like concat(concat("%",#{brandName}),"%")
+            </if>
+            <if test="companyName != null and companyName != ''">
+                and company_name like concat(concat("%",#{companyName}),"%")
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
     </select>
 </mapper>
